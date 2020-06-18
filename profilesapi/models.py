@@ -6,27 +6,27 @@ from django.contrib.auth.models import BaseUserManager
 
 class UserProfileManager(BaseUserManager):
      """Manager for user profile"""
-
-    def create_user(self,email,name,password=None):
+     def create_user(self,email,name,password=None):
         """create new user profiles"""
 
         if not email:
             raise ValueError("user must have an email address")
 
-        email=self.normalize_email(email)
-        user=self.model(email=email,name=name)
+        email =self.normalize_email(email)
+        user =self.model(email=email,name=name)
 
         user.set_password(password)
         user.save(using=self._db)
 
         return user
 
-    def create_supperuser(self,email,name,password):
+
+     def create_superuser(self,email,name,password):
         """" Create and  save new superuser with details"""
         user=self.create_user(email,name,password)
 
-        user.is_superuser=True
-        user.is_saff=True
+        user.is_superuser = True
+        user.is_staff = True
 
         user.save(using=self._db)
 
@@ -35,18 +35,19 @@ class UserProfileManager(BaseUserManager):
 
 class UserProfile(AbstractBaseUser,PermissionsMixin):
     """Database models for user in the system"""
-    email=models.EmailField(max_length=255,unique=True)
-    name=models.CharField(max_length=255)
-    is_active=models.BooleanField(default=True)
-    is_saff=models.BooleanField(default=False)
+    email = models.EmailField(max_length=255,unique=True)
+    name = models.CharField(max_length=255)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
-    object=UserProfileManager()
+
+    object = UserProfileManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
 
-    def get_full_name(self):
+    def get_ful_name(self):
         """Retrieve full name of user"""
         return self.name
 
